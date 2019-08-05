@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "TeamCityImageChecker": {
+      "commandName": "Project",
+      "commandLineArgs": "-i admin-service -r https://daemon.e-pul.az:5000"
+    }
+  }
+}
