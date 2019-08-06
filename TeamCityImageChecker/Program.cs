@@ -16,7 +16,6 @@ namespace TeamCityImageChecker
         static void Main(string[] args)
         {
             Parser.Default.ParseArguments<Options>(args).WithParsed(o => ProccessRegistry(o.Image, o.Registry));
-            Console.ReadKey();
         }
 
         private static void ProccessRegistry(string image, string registry)
@@ -29,7 +28,7 @@ namespace TeamCityImageChecker
             // Get info about latest tag
             var historyDate = GetManifest(image, "latest");
 
-            var allTagInfo = tagListResponse.Tags.Where(i => i != "latest" && i != historyDate.Tag)
+            var allTagInfo = tagListResponse.Tags.Where(i => i != "latest")
                                             .Select(i => GetManifest(image, i))
                                             .OrderBy(i => i.Created).ToList();
             if (allTagInfo.Count == 0)
@@ -37,9 +36,13 @@ namespace TeamCityImageChecker
                 return;
             }
 
-            if (allTagInfo[allTagInfo.Count - 1].Container == historyDate.Container)
+            if (allTagInfo[allTagInfo.Count - 2].Container == historyDate.Container)
             {
                 Console.WriteLine("##teamcity[buildStop comment='canceling comment' readdToQueue='true']");
+            }
+            else
+            {
+                Console.WriteLine("Not equal!");
             }
         }
 
